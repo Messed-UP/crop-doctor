@@ -167,6 +167,19 @@ st.markdown(
         color: #4B5563;
         text-align: center;
     }
+
+    /* Copyable code block wrapping and overflow prevention */
+    pre, code {
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    div[data-testid="stCodeBlock"] pre {
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+        overflow-x: hidden !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -201,6 +214,30 @@ def render_urgency_badge(urgency: str, is_urdu: bool) -> str:
         label = "نگرانی کریں" if is_urdu else "Urgency: Monitor"
         css = "badge-urg-monitor"
     return f'<span class="badge {css}">{label}</span>'
+
+
+def format_whatsapp_summary(raw_summary: str) -> str:
+    """Format the WhatsApp summary into clean, separate short lines."""
+    if not raw_summary:
+        return ""
+    # Split on pipe or newline
+    raw_lines = raw_summary.replace("\r", "").split("\n")
+    cleaned_lines = []
+    for line in raw_lines:
+        if "|" in line:
+            parts = [p.strip() for p in line.split("|") if p.strip()]
+            cleaned_lines.extend(parts)
+        elif line.strip():
+            cleaned_lines.append(line.strip())
+
+    # Strip any leading bullet markers so each short line is clean
+    final_lines = []
+    for line in cleaned_lines:
+        clean = line.lstrip("•-* \t")
+        if clean:
+            final_lines.append(clean)
+
+    return "\n".join(final_lines)
 
 
 def main():
@@ -548,7 +585,41 @@ def main():
             if result.whatsapp_summary:
                 expander_label = "واٹس ایپ پر شیئر کرنے کے لیے خلاصہ" if is_urdu else "WhatsApp Summary"
                 with st.expander(f"📲 {expander_label}"):
-                    st.code(result.whatsapp_summary, language="text")
+                    formatted_summary = format_whatsapp_summary(result.whatsapp_summary)
+                    if is_urdu:
+                        st.markdown(
+                            """
+                            <style>
+                            div[data-testid="stCodeBlock"] pre, div[data-testid="stCodeBlock"] code {
+                                direction: rtl !important;
+                                text-align: right !important;
+                                font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, sans-serif !important;
+                                line-height: 2.1 !important;
+                                font-size: 1.05rem !important;
+                                white-space: pre-wrap !important;
+                                word-break: break-word !important;
+                                overflow-x: hidden !important;
+                            }
+                            </style>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            """
+                            <style>
+                            div[data-testid="stCodeBlock"] pre, div[data-testid="stCodeBlock"] code {
+                                direction: ltr !important;
+                                text-align: left !important;
+                                white-space: pre-wrap !important;
+                                word-break: break-word !important;
+                                overflow-x: hidden !important;
+                            }
+                            </style>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+                    st.code(formatted_summary, language=None)
 
         # ---------------------------------------------------------------------
         # PINNED DISCLAIMER (Shown on every result state)
