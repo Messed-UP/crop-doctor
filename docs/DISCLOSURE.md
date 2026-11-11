@@ -1,15 +1,15 @@
 # Disclosure (fill in during the event)
 
 ## AI tools used to write code
-- Google Antigravity (AI coding agent) - used for: architecture scaffolding, Pydantic schema, safe prompt engineering, Gemini API integration, and Streamlit UI with Urdu RTL support.
-- Other assistant(s) - used for:
-- Design/slides tools (only if used, e.g. Canva) - used for:
+- Google Antigravity (AI coding agent) - used for: architecture scaffolding, Pydantic schema design, prompt engineering with responsible AI guardrails, Gemini API integration, and Streamlit UI with pure Urdu RTL typography and light-theme locking.
+- Other assistant(s) - used for: None
+- Design/slides tools (only if used, e.g. Canva) - used for: None
 
 ## AI models and APIs in the product
-- Gemini API (model: gemini-3.5-flash) via Google AI Studio - leaf analysis and Urdu response
+- Gemini API (model: gemini-3.5-flash) via Google AI Studio - multimodal leaf photo reasoning, structured JSON response generation, and localized Urdu guidance.
 
 ## Libraries
-- Python 3.13, Streamlit, Pillow, google-genai, pydantic
+- Python 3.13, Streamlit, Pillow, google-genai, pydantic (all pinned in requirements.txt)
 
 ## Images / datasets
 | File | Source (URL) | License / note |
