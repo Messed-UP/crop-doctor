@@ -64,3 +64,4 @@ class CropAnalysis(BaseModel):
         default="",
         description="Short, clean summary in Urdu suitable for sharing via WhatsApp."
     )
+
