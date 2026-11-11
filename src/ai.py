@@ -15,7 +15,7 @@ from src.prompts import build_prompt
 
 # Primary and fallback model constants
 MODEL_NAME = "gemini-3.5-flash"
-FALLBACK_MODEL = "gemini-2.5-flash"
+FALLBACK_MODEL = "gemini-3.8-flash"
 
 # Retry delays in seconds for transient errors
 RETRY_DELAYS = [2, 4, 8]
@@ -77,6 +77,15 @@ def _is_retryable(error: Exception) -> bool:
         return True
 
     return False
+
+
+def _is_not_found(error: Exception) -> bool:
+    """Determine whether an error is a 404 NOT_FOUND (e.g. model not found or unsupported)."""
+    code = getattr(error, "code", None)
+    if code == 404:
+        return True
+    err_str = str(error).lower()
+    return "404" in err_str or "not_found" in err_str or "not found" in err_str
 
 
 def _generate(client: genai.Client, model: str, contents: list) -> CropAnalysis:
@@ -143,12 +152,15 @@ def analyze(image_bytes: bytes, mime_type: str = "image/jpeg", language: str = "
             return _generate(client, MODEL_NAME, contents)
         except Exception as e:
             last_error = e
-            # Stop immediately on non-retryable errors (invalid key, bad request)
+            # A 404 NOT_FOUND on a model is not retried, but moves straight to the fallback model
+            if _is_not_found(e):
+                break
+            # Stop immediately on other non-retryable errors (invalid key, bad request)
             if not _is_retryable(e):
                 break
 
-    # 4. If primary model fails on transient errors, attempt FALLBACK_MODEL once
-    if last_error is not None and _is_retryable(last_error):
+    # 4. If primary model fails on transient errors or 404 NOT_FOUND, attempt FALLBACK_MODEL once
+    if last_error is not None and (_is_retryable(last_error) or _is_not_found(last_error)):
         try:
             return _generate(client, FALLBACK_MODEL, contents)
         except Exception as e:
