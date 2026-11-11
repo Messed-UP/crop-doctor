@@ -137,3 +137,4 @@ Crop Doctor empowers Pakistani farmers with immediate, safe, and honest agronomi
 ### 6. "Why did you build this as a Streamlit web app rather than a native mobile app or WhatsApp bot?"
 **Answer:**  
 "For the hackathon, a Streamlit web app was the fastest way to deliver a zero-install, responsive experience that works on any smartphone browser or laptop. However, because our architecture is strictly decoupled—all Gemini integration and Pydantic validation live in `src/ai.py` and `src/schema.py` without UI coupling—this exact backend can be connected to a Twilio or Meta WhatsApp Business API webhook in less than a day."
+

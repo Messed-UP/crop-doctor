@@ -6,7 +6,7 @@
 - Design/slides tools (only if used, e.g. Canva) - used for: None
 
 ## AI models and APIs in the product
-- Gemini API (model: gemini-3.5-flash) via Google AI Studio - multimodal leaf photo reasoning, structured JSON response generation, and localized Urdu guidance.
+- Gemini API (primary: gemini-3.5-flash, fallback: gemini-2.5-flash) via Google AI Studio - multimodal leaf photo reasoning, structured JSON response generation, and localized Urdu guidance.
 
 ## Libraries
 - Python 3.13, Streamlit, Pillow, google-genai, pydantic (all pinned in requirements.txt)
