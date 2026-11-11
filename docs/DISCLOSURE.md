@@ -21,11 +21,17 @@
 | samples/your_photo_1.webp | own photo | taken by team |
 
 ## Mini evaluation (by hand, small public sample)
-| Image | Expected (what we know) | Output looked plausible? | Notes |
-|---|---|---|---|
-| | | yes / no | |
+## Mini evaluation (by hand, small sample of our own photos)
 
-Summary: plausible answers on __ of __ images. Small public sample, not a validation study.
+| Image | What the photo is (our knowledge) | App output | Plausible? | Notes |
+|---|---|---|---|---|
+| samples/disease_1.jpg | Potato leaf with visible lesions (disease name unverified) | Potato, likely late blight, act today, avoid list shown | Plausible, disease name unverified | Single-photo diagnosis is uncertain; confidence capped after fix |
+| samples/healthy_1.jpg | Healthy leaf | Grapevine, healthy, monitor, no chemical treatment | Yes | No disease invented |
+| samples/blurry_1.jpg | Blurry leaf photo | No diagnosis, asked for a clearer photo | Yes | Message wording fixed to "too unclear" |
+| samples/non_plant_1.jpg | Shoes | Rejected, asked for a leaf photo, no results | Yes | Plants in the background did not fool it |
+| samples/your_photo_1.webp | (fill in) | (not tested yet) | (fill in) | Test it or delete this row |
+
+Summary: plausible answers on 4 of 4 tested images. Small sample of our own photos, not a validation study. No accuracy percentage is claimed.
 
 ## Limitations
 - Not a diagnosis. Accuracy not formally validated.
