@@ -84,7 +84,7 @@ Over 80% of cultivated land in Pakistan is managed by smallholder farmers who gr
         ├── Resilient Dispatch:
         │     ├── Primary Model: MODEL_NAME = "gemini-3.5-flash"
         │     ├── Exponential Backoff: Retries up to 3 times (waits: 2s, 4s, 8s) on 503/429
-        │     └── Fallback Model: FALLBACK_MODEL = "gemini-2.5-flash" (1 attempt if primary fails)
+        │     └── Fallback Model: FALLBACK_MODEL = "gemini-3.8-flash" (1 attempt if primary fails)
         │
         ├── Pydantic Contract Enforcement:
         │     └── response_schema = CropAnalysis (src/schema.py)
@@ -102,9 +102,9 @@ Over 80% of cultivated land in Pakistan is managed by smallholder farmers who gr
 ---
 
 ## 🌐 Google Technologies Used
-- **Gemini API via Google AI Studio (`gemini-3.5-flash` & `gemini-2.5-flash`):**
+- **Gemini API via Google AI Studio (`gemini-3.5-flash` & `gemini-3.8-flash`):**
   - **Gemini 3.5 Flash:** Primary multimodal engine for zero-shot leaf symptom reasoning, non-plant detection, image clarity assessment, and structured JSON output.
-  - **Gemini 2.5 Flash:** Automatic fallback model ensuring system uptime during upstream transient errors.
+  - **Gemini 3.8 Flash:** Automatic fallback model ensuring system uptime during upstream transient errors or model routing.
   - **`google-genai` Python SDK:** Modern official Google GenAI SDK utilizing structured JSON schemas (`response_schema=CropAnalysis`).
 - **Google Antigravity:** AI coding agent used throughout development for architectural scaffolding, Pydantic data modeling, safe prompt engineering, and RTL UI implementation.
 - **Google Fonts (`Noto Nastaliq Urdu`):** High-quality native Nastaliq typography providing authentic, legible Urdu for Pakistani farmers.

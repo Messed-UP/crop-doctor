@@ -42,7 +42,7 @@ Finally, if someone uploads an image that is not a plant—such as shoes—the m
 "Crop Doctor was built with a decoupled and resilient architecture:
 - **Built with Google Antigravity:** We developed the entire codebase using Google Antigravity as our AI coding assistant for architecture scaffolding, Pydantic modeling, and prompt engineering.
 - **Frontend in Streamlit:** Styled with a locked light theme (`.streamlit/config.toml`) to ensure readability outdoors in bright daylight.
-- **AI Models & Resilience:** The backend in `src/ai.py` calls our primary model, **`gemini-3.5-flash`**. If temporary upstream errors occur (such as 503 or 429), it retries up to 3 times with backoff waits of 2, 4, and 8 seconds. If retries are exhausted, it automatically attempts a single fallback call to **`gemini-2.5-flash`**.
+- **AI Models & Resilience:** The backend in `src/ai.py` calls our primary model, **`gemini-3.5-flash`**. If temporary upstream errors occur (such as 503 or 429), it retries up to 3 times with backoff waits of 2, 4, and 8 seconds. If retries are exhausted, it automatically attempts a single fallback call to **`gemini-3.8-flash`**.
 - **Contract Validation:** Responses are validated against our Pydantic `CropAnalysis` schema using the `google-genai` SDK's structured outputs.
 - **Decoupled Code:** `app.py` contains strictly UI presentation logic, keeping AI calls isolated in `src/ai.py`."
 
@@ -88,7 +88,7 @@ This **supports SDG 2: Zero Hunger**, with possible secondary contributions to S
 ### [2:05 - 2:50] Architecture & Responsible AI
 "Under the hood:
 - **Built with Google Antigravity:** Used for codebase scaffolding, schema modeling, and prompt refinement.
-- **Resilient AI Pipeline:** Built on **`gemini-3.5-flash`** with up to 3 automatic retries (2s, 4s, 8s) on transient errors, plus a fallback to **`gemini-2.5-flash`**.
+- **Resilient AI Pipeline:** Built on **`gemini-3.5-flash`** with up to 3 automatic retries (2s, 4s, 8s) on transient errors, plus a fallback to **`gemini-3.8-flash`**.
 - **Structured Validation:** Enforced through a Pydantic `CropAnalysis` schema using the `google-genai` SDK.
 - **Responsible AI:** Guidance only, no commercial brand bias, no numerical dosages, and an honest manual evaluation log in `docs/DISCLOSURE.md` without invented accuracy statistics.
 
@@ -130,7 +130,7 @@ Crop Doctor aims to provide cautious, helpful guidance for farmers who need it m
 - **Key Points:**
   - **Built with Google Antigravity:** AI coding agent used to scaffold the project, structure Pydantic models, and iterate on prompts.
   - **Frontend:** Streamlit with locked light theme (`.streamlit/config.toml`) for sunlight legibility.
-  - **AI Engine & Resilience:** Google Gemini 3.5 Flash (`MODEL_NAME`) with 3 retry backoffs (2s, 4s, 8s) and automatic fallback to Gemini 2.5 Flash (`FALLBACK_MODEL`).
+  - **AI Engine & Resilience:** Google Gemini 3.5 Flash (`MODEL_NAME`) with 3 retry backoffs (2s, 4s, 8s) and automatic fallback to Gemini 3.8 Flash (`FALLBACK_MODEL`).
   - **Contract Validation:** Pydantic `CropAnalysis` schema ensuring validated JSON outputs via `google-genai` SDK.
   - **Prompt Guidance:** The prompt guides the model to maintain strict language isolation without mixing Urdu and English.
 - **Visuals:** Architecture diagram: Image -> Streamlit UI -> src/ai.py (Retry & Fallback) -> Gemini API -> Pydantic Schema -> UI.
