@@ -20,7 +20,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Custom CSS for Google Fonts, Color Palette (#F6F4EC, #2F6B3A, amber), and RTL styling
+# Custom CSS for Google Fonts, Color Palette, and typography
 st.markdown(
     """
     <style>
@@ -39,7 +39,7 @@ st.markdown(
         direction: rtl;
         text-align: right;
         color: #2F6B3A;
-        font-size: 2.2rem;
+        font-size: 2.3rem;
         font-weight: 700;
         margin-bottom: 0.2rem;
     }
@@ -84,9 +84,7 @@ st.markdown(
         border-radius: 20px;
         font-size: 0.95rem;
         font-weight: 600;
-        margin-right: 0.5rem;
-        margin-left: 0.5rem;
-        margin-bottom: 0.5rem;
+        margin: 0.25rem;
     }
 
     /* Confidence Badge colors */
@@ -136,6 +134,18 @@ st.markdown(
         margin-bottom: 1rem;
     }
 
+    .avoid-card-en {
+        background-color: #FFFBEB;
+        border-left: 6px solid #D97706;
+        border-right: 1px solid #FCD34D;
+        border-top: 1px solid #FCD34D;
+        border-bottom: 1px solid #FCD34D;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
     /* Retake guidance card */
     .retake-card {
         background-color: #FEF2F2;
@@ -164,22 +174,22 @@ st.markdown(
 
 
 def render_confidence_badge(confidence: str, is_urdu: bool) -> str:
-    """Format the HTML badge for confidence level."""
+    """Format the HTML badge for confidence level strictly in one language."""
     conf = confidence.lower()
     if conf == "high":
-        label = "اعتماد: زیادہ (High)" if is_urdu else "Confidence: High"
+        label = "اعتماد: زیادہ" if is_urdu else "Confidence: High"
         css = "badge-conf-high"
     elif conf == "medium":
-        label = "اعتماد: درمیانہ (Medium)" if is_urdu else "Confidence: Medium"
+        label = "اعتماد: درمیانہ" if is_urdu else "Confidence: Medium"
         css = "badge-conf-medium"
     else:
-        label = "اعتماد: کم (Low)" if is_urdu else "Confidence: Low"
+        label = "اعتماد: کم" if is_urdu else "Confidence: Low"
         css = "badge-conf-low"
     return f'<span class="badge {css}">{label}</span>'
 
 
 def render_urgency_badge(urgency: str, is_urdu: bool) -> str:
-    """Format the HTML badge for urgency level."""
+    """Format the HTML badge for urgency level strictly in one language."""
     urg = urgency.lower()
     if urg == "today":
         label = "فوری توجہ: آج ہی" if is_urdu else "Urgency: Act Today"
@@ -188,7 +198,7 @@ def render_urgency_badge(urgency: str, is_urdu: bool) -> str:
         label = "توجہ: اس ہفتے" if is_urdu else "Urgency: This Week"
         css = "badge-urg-this_week"
     else:
-        label = "توجہ: نگرانی کریں" if is_urdu else "Urgency: Monitor"
+        label = "نگرانی کریں" if is_urdu else "Urgency: Monitor"
         css = "badge-urg-monitor"
     return f'<span class="badge {css}">{label}</span>'
 
@@ -206,7 +216,7 @@ def main():
     col_title, col_lang = st.columns([3, 1])
     with col_lang:
         lang_choice = st.radio(
-            "Language / زبان",
+            "Language",
             options=["اردو", "English"],
             index=0,
             horizontal=True,
@@ -219,7 +229,7 @@ def main():
     if is_urdu:
         st.markdown(
             """
-            <div class="urdu-title">🌱 فصل ڈاکٹر (Crop Doctor)</div>
+            <div class="urdu-title">🌱 فصل ڈاکٹر</div>
             <div class="urdu-subtitle">پاکستانی کسان بھائیوں کے لیے پودوں کے امراض اور پتوں کا فوری معائنہ</div>
             """,
             unsafe_allow_html=True,
@@ -243,11 +253,16 @@ def main():
         if is_urdu
         else "Upload affected crop leaf photo:"
     )
+    uploader_help = (
+        "گندم، کپاس، چاول، کماد، مکئی، ٹماٹر وغیرہ"
+        if is_urdu
+        else "Wheat, Cotton, Rice, Sugarcane, Maize, Tomato, etc."
+    )
 
     uploaded_file = st.file_uploader(
         uploader_label,
         type=["jpg", "jpeg", "png", "webp"],
-        help="Wheat, Cotton, Rice, Sugarcane, Maize, Tomato, etc.",
+        help=uploader_help,
     )
 
     # Check for available public sample images
@@ -261,13 +276,14 @@ def main():
 
     selected_sample = None
     if sample_files and uploaded_file is None:
-        sample_prompt = "یا گیلری سے نمونہ تصویر منتخب کریں:" if is_urdu else "Or choose a sample photo:"
+        sample_prompt = "یا نمونہ تصویر منتخب کریں:" if is_urdu else "Or choose a sample photo:"
+        none_label = "-- کوئی نہیں --" if is_urdu else "-- None --"
         sample_choice = st.selectbox(
             sample_prompt,
-            options=["-- None / کوئی نہیں --"] + sample_files,
+            options=[none_label] + sample_files,
             index=0,
         )
-        if sample_choice != "-- None / کوئی نہیں --":
+        if sample_choice != none_label:
             selected_sample = samples_dir / sample_choice
 
     # Determine active photo source
@@ -278,7 +294,7 @@ def main():
         with col_img:
             st.image(
                 uploaded_file,
-                caption="Uploaded Photo" if not is_urdu else "اپلوڈ شدہ تصویر",
+                caption="اپلوڈ شدہ تصویر" if is_urdu else "Uploaded Photo",
                 use_container_width=True,
             )
     elif selected_sample is not None and selected_sample.exists():
@@ -289,7 +305,7 @@ def main():
         with col_img:
             st.image(
                 str(selected_sample),
-                caption=f"Sample: {selected_sample.name}",
+                caption=f"نمونہ تصویر: {selected_sample.name}" if is_urdu else f"Sample: {selected_sample.name}",
                 use_container_width=True,
             )
     else:
@@ -303,7 +319,7 @@ def main():
         spinner_msg = (
             "پتے کا معائنہ کیا جا رہا ہے، براہ کرم انتظار فرمائیں..."
             if is_urdu
-            else "Analyzing leaf photo with Gemini... please wait..."
+            else "Analyzing leaf photo... please wait..."
         )
         with st.spinner(spinner_msg):
             try:
@@ -315,7 +331,7 @@ def main():
                 st.session_state.analysis_result = result
             except Exception as e:
                 err_msg = (
-                    f"تجزیہ مکمل نہیں ہو سکا: {e}"
+                    f"معائنہ مکمل نہیں ہو سکا: {e}"
                     if is_urdu
                     else f"Analysis could not be completed: {e}"
                 )
@@ -328,32 +344,70 @@ def main():
 
     if result is not None:
         st.markdown("---")
+        dir_attr = 'dir="rtl"' if is_urdu else 'dir="ltr"'
         direction_class = "urdu-text" if is_urdu else ""
 
+        # Open container with dir="rtl" for Urdu
+        st.markdown(f'<div {dir_attr} class="{direction_class}">', unsafe_allow_html=True)
+
         # ---------------------------------------------------------------------
-        # STATE 3: RETAKE / INADEQUATE PHOTO
-        # (If is_plant_photo is False or needs_better_photo is True)
-        # Show specific retake message and NO diagnosis/treatment results.
+        # STATE 3: RETAKE / INADEQUATE PHOTO (Separated messages)
         # ---------------------------------------------------------------------
-        if not result.is_plant_photo or result.needs_better_photo:
+        if not result.is_plant_photo:
+            # Case 1: Image is not a plant leaf
             retake_title = (
-                "⚠️ تصویر ناکافی ہے - دوبارہ تصویر درکار ہے"
+                "⚠️ یہ پودے کا پتہ معلوم نہیں ہوتا"
                 if is_urdu
-                else "⚠️ Better Photo Needed - No Diagnosis Made"
+                else "⚠️ This does not look like a plant leaf"
+            )
+            request_label = "درکار تصویر:" if is_urdu else "Required Photo:"
+            specific_request = result.better_photo_request or (
+                "براہ کرم پودے کے متاثرہ پتے کی واضح تصویر اپلوڈ کریں۔"
+                if is_urdu
+                else "Please upload a clear photo of an affected plant leaf."
             )
 
-            reason_text = ""
-            if not result.is_plant_photo:
-                reason_text = (
-                    "اپلوڈ کی گئی تصویر میں پودے یا پتے کی موجودگی واضح نہیں ہے۔"
-                    if is_urdu
-                    else "The uploaded image does not appear to contain a crop leaf."
-                )
-
-            specific_request = result.better_photo_request or (
-                "براہ کرم پتے کی صاف، واضح اور روشنی میں لی گئی تصویر دوبارہ اپلوڈ کریں۔"
+            tips_header = "بہتر تصویر کے لیے تجاویز:" if is_urdu else "Tips for a better photo:"
+            tips_items = [
+                "کیمرے کا رخ براہ راست پودے کے پتے پر رکھیں۔"
                 if is_urdu
-                else "Please upload a clearer, well-lit photo of the affected leaf."
+                else "Point the camera directly at a crop leaf.",
+                "پتہ فریم میں نمایاں اور واضح ہونا چاہیے۔"
+                if is_urdu
+                else "Ensure the leaf fills most of the camera view.",
+                "دن کی قدرتی روشنی میں تصویر لیں۔"
+                if is_urdu
+                else "Capture in natural daylight without heavy shadows.",
+            ]
+            tips_html = "".join([f"<li>{t}</li>" for t in tips_items])
+
+            st.markdown(
+                f"""
+                <div class="retake-card">
+                    <h3 style="color: #DC2626; margin-top:0;">{retake_title}</h3>
+                    <div style="background-color: #FFFFFF; padding: 1rem; border-radius: 8px; border: 1px solid #FCA5A5; margin-bottom: 1rem;">
+                        <strong>{request_label}</strong>
+                        <p style="font-size: 1.1rem; margin-top: 0.3rem; color: #991B1B;">{specific_request}</p>
+                    </div>
+                    <p><strong>{tips_header}</strong></p>
+                    <ul>{tips_html}</ul>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        elif result.needs_better_photo:
+            # Case 2: Image is a plant leaf, but too unclear to judge
+            retake_title = (
+                "⚠️ تصویر اتنی واضح نہیں ہے کہ فیصلہ کیا جا سکے"
+                if is_urdu
+                else "⚠️ The photo is too unclear to judge"
+            )
+            request_label = "درکار تصویر کی تفصیل:" if is_urdu else "Specific Request:"
+            specific_request = result.better_photo_request or (
+                "براہ کرم پتے کی زیادہ واضح اور فوکس میں لی گئی تصویر اپلوڈ کریں۔"
+                if is_urdu
+                else "Please upload a closer photo in clear focus."
             )
 
             tips_header = "بہتر تصویر کے لیے تجاویز:" if is_urdu else "Tips for a better photo:"
@@ -361,7 +415,7 @@ def main():
                 "کیمرے کو پتے کے قریب رکھیں تاکہ علامات اور دھبے واضح نظر آئیں۔"
                 if is_urdu
                 else "Hold camera steady and close to the affected spot or lesion.",
-                "اگر کیڑے یا پھپھوندی نیچے ہے تو پتے کا نچلا رخ دکھائیں۔"
+                "اگر کیڑے یا پھپھوندی نیچے ہو تو پتے کا نچلا رخ دکھائیں۔"
                 if is_urdu
                 else "If pests or mildew are on the underside, show the back of the leaf.",
                 "دن کی قدرتی روشنی میں تصویر لیں۔"
@@ -372,11 +426,10 @@ def main():
 
             st.markdown(
                 f"""
-                <div class="retake-card {direction_class}">
+                <div class="retake-card">
                     <h3 style="color: #DC2626; margin-top:0;">{retake_title}</h3>
-                    {f'<p style="font-weight:600;">{reason_text}</p>' if reason_text else ''}
                     <div style="background-color: #FFFFFF; padding: 1rem; border-radius: 8px; border: 1px solid #FCA5A5; margin-bottom: 1rem;">
-                        <strong>{'درکار تصویر کی تفصیل:' if is_urdu else 'Specific Request:'}</strong>
+                        <strong>{request_label}</strong>
                         <p style="font-size: 1.1rem; margin-top: 0.3rem; color: #991B1B;">{specific_request}</p>
                     </div>
                     <p><strong>{tips_header}</strong></p>
@@ -390,18 +443,26 @@ def main():
         # STATE 2: VALID RESULT CARD
         # ---------------------------------------------------------------------
         else:
-            # Badges header
+            # Badges
             conf_badge = render_confidence_badge(result.confidence, is_urdu)
             urg_badge = render_urgency_badge(result.urgency, is_urdu)
 
             # Identification section
+            crop_label = "فصل:" if is_urdu else "Crop:"
+            problem_label = "امکانی مسئلہ:" if is_urdu else "Likely Issue:"
+            note_label = (
+                "نوٹ: یہ حتمی تشخیص نہیں ہے، بلکہ پتے پر موجود علامات کی بنیاد پر امکانی رہنمائی ہے۔"
+                if is_urdu
+                else "Note: This is guidance based on observed leaf symptoms, not a certified diagnosis."
+            )
+
             st.markdown(
                 f"""
-                <div class="card {direction_class}">
+                <div class="card">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom: 0.75rem;">
                         <div>
                             <span style="font-size: 1.4rem; font-weight:700; color: #2F6B3A;">
-                                {'فصل:' if is_urdu else 'Crop:'} {result.crop}
+                                {crop_label} {result.crop}
                             </span>
                         </div>
                         <div>
@@ -410,11 +471,11 @@ def main():
                         </div>
                     </div>
                     <div style="font-size: 1.25rem; font-weight: 600; color: #1F2937; margin-bottom: 0.5rem;">
-                        {'امکانی مسئلہ:' if is_urdu else 'Likely Issue:'} 
+                        {problem_label} 
                         <span style="color: #B45309;">{result.likely_problem}</span>
                     </div>
                     <div style="font-size: 0.9rem; color: #6B7280;">
-                        {'نوٹ: یہ حتمی تشخیص نہیں ہے، بلکہ علامات کی بنیاد پر امکانی رہنمائی ہے۔' if is_urdu else 'Note: This is guidance based on observed leaf symptoms, not a certified diagnosis.'}
+                        {note_label}
                     </div>
                 </div>
                 """,
@@ -423,11 +484,11 @@ def main():
 
             # Treatment Steps Card
             if result.treatment_steps:
-                steps_header = "مجوزہ محفوظ اقدامات (Treatment Steps)" if is_urdu else "Recommended Safe Actions"
+                steps_header = "مجوزہ محفوظ اقدامات" if is_urdu else "Recommended Safe Actions"
                 steps_items = "".join([f"<li style='margin-bottom: 0.5rem;'>{s}</li>" for s in result.treatment_steps])
                 st.markdown(
                     f"""
-                    <div class="card {direction_class}">
+                    <div class="card">
                         <h4 style="color: #2F6B3A; margin-top:0;">✅ {steps_header}</h4>
                         <ol style="padding-right: 1.5rem; padding-left: 1.5rem;">
                             {steps_items}
@@ -437,13 +498,14 @@ def main():
                     unsafe_allow_html=True,
                 )
 
-            # "Do NOT Do" List (Avoid List)
+            # Avoid List ("Do NOT Do")
             if result.avoid_list:
-                avoid_header = "یہ غلطیاں ہرگز نہ کریں (What NOT to do)" if is_urdu else "Actions to AVOID (Do Not Do)"
+                avoid_header = "یہ غلطیاں ہرگز نہ کریں" if is_urdu else "Actions to Avoid"
+                avoid_card_class = "avoid-card" if is_urdu else "avoid-card-en"
                 avoid_items = "".join([f"<li style='margin-bottom: 0.4rem;'>{a}</li>" for a in result.avoid_list])
                 st.markdown(
                     f"""
-                    <div class="avoid-card {direction_class}">
+                    <div class="{avoid_card_class}">
                         <h4 style="color: #B45309; margin-top:0;">⛔ {avoid_header}</h4>
                         <ul style="padding-right: 1.5rem; padding-left: 1.5rem;">
                             {avoid_items}
@@ -455,11 +517,11 @@ def main():
 
             # Prevention Tips
             if result.prevention_tips:
-                prev_header = "آئندہ بچاؤ کی تدابیر (Prevention Tips)" if is_urdu else "Prevention Tips for Next Season"
+                prev_header = "آئندہ بچاؤ کی تدابیر" if is_urdu else "Prevention Tips for Next Season"
                 prev_items = "".join([f"<li style='margin-bottom: 0.4rem;'>{p}</li>" for p in result.prevention_tips])
                 st.markdown(
                     f"""
-                    <div class="card {direction_class}">
+                    <div class="card">
                         <h4 style="color: #2F6B3A; margin-top:0;">🛡️ {prev_header}</h4>
                         <ul style="padding-right: 1.5rem; padding-left: 1.5rem;">
                             {prev_items}
@@ -474,7 +536,7 @@ def main():
                 expert_header = "زرعی افسر سے کب رابطہ کریں:" if is_urdu else "When to Consult an Agriculture Officer:"
                 st.markdown(
                     f"""
-                    <div class="card {direction_class}" style="border-left: 4px solid #2F6B3A; border-right: 4px solid #2F6B3A;">
+                    <div class="card" style="border-left: 4px solid #2F6B3A; border-right: 4px solid #2F6B3A;">
                         <h4 style="color: #1F2937; margin-top:0;">👨‍🌾 {expert_header}</h4>
                         <p style="margin-bottom: 0;">{result.when_to_see_expert}</p>
                     </div>
@@ -484,25 +546,29 @@ def main():
 
             # WhatsApp Summary Box
             if result.whatsapp_summary:
-                with st.expander("📲 واٹس ایپ خلاصہ (WhatsApp Summary)" if is_urdu else "📲 WhatsApp Summary"):
+                expander_label = "واٹس ایپ پر شیئر کرنے کے لیے خلاصہ" if is_urdu else "WhatsApp Summary"
+                with st.expander(f"📲 {expander_label}"):
                     st.code(result.whatsapp_summary, language="text")
 
         # ---------------------------------------------------------------------
         # PINNED DISCLAIMER (Shown on every result state)
         # ---------------------------------------------------------------------
         disclaimer_text = (
-            "⚠️ <strong>ضروری وضاحت:</strong> یہ ایپ صرف عام معلوماتی رہنمائی کے لیے تیار کی گئی ہے اور یہ کوئی مستند یا حتمی تشخیصی لیب رپورٹ نہیں ہے۔ کسی بھی زرعی زہر، کھاد یا سپرے کے استعمال سے قبل اپنے مقامی محکمہ زراعت (فیلڈ آفیسر) سے رہنمائی ضرور لیں۔"
+            "⚠️ <strong>ضروری وضاحت:</strong> یہ معلومات صرف عام رہنمائی کے لیے فراہم کی گئی ہیں اور یہ کوئی لیبارٹری کی تصدیق شدہ تشخیصی رپورٹ نہیں ہے۔ کسی بھی زرعی دوا کے استعمال سے قبل دوا کے لیبل پر لکھی ہدایات پر عمل کریں اور اپنے مقامی محکمہ زراعت کے فیلڈ آفیسر سے تصدیق ضرور کریں۔"
             if is_urdu
-            else "⚠️ <strong>Disclaimer:</strong> This application provides general guidance only and is not a certified laboratory diagnosis. Always consult a local agriculture extension officer before purchasing or applying any pesticides or chemical treatments."
+            else "⚠️ <strong>Important Notice:</strong> This guidance is provided for informational purposes only and is not a certified laboratory diagnosis. Always follow the product label instructions and confirm with a local agriculture extension officer before applying any treatment."
         )
         st.markdown(
             f"""
-            <div class="disclaimer-box {direction_class}">
+            <div class="disclaimer-box">
                 {disclaimer_text}
             </div>
             """,
             unsafe_allow_html=True,
         )
+
+        # Close container
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
