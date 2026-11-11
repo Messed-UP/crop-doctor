@@ -26,13 +26,6 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Segoe+UI:wght@400;600;700&display=swap');
 
-    /* Global page styling */
-    .stApp {
-        background-color: #F6F4EC;
-        color: #1F2937;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
     /* Urdu RTL typography */
     .urdu-text {
         font-family: 'Noto Nastaliq Urdu', serif;
