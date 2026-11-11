@@ -14,7 +14,7 @@
 ## Images / datasets
 | File | Source (URL) | License / note |
 |---|---|---|
-| samples/____ | | |
+| samples/yourphoto.webp | own photo | taken by team (no external license) |
 
 ## Mini evaluation (by hand, small public sample)
 | Image | Expected (what we know) | Output looked plausible? | Notes |
