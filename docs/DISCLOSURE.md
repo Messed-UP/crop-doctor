@@ -14,7 +14,11 @@
 ## Images / datasets
 | File | Source (URL) | License / note |
 |---|---|---|
-| samples/yourphoto.webp | own photo | taken by team (no external license) |
+| samples/blurry_1.jpg | own photo | taken by team |
+| samples/disease_1.jpg | own photo | taken by team |
+| samples/healthy_1.jpg | own photo | taken by team |
+| samples/non_plant_1.jpg | own photo | taken by team |
+| samples/your_photo_1.webp | own photo | taken by team |
 
 ## Mini evaluation (by hand, small public sample)
 | Image | Expected (what we know) | Output looked plausible? | Notes |
