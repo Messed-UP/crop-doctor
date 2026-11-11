@@ -367,10 +367,20 @@ def main():
                 )
                 st.session_state.analysis_result = result
             except Exception as e:
+                st.session_state.analysis_result = None
+
+                # Log technical details to the terminal only, with no API key exposed
+                api_key = os.environ.get("GEMINI_API_KEY", "")
+                tech_details = str(e)
+                if api_key and api_key in tech_details:
+                    tech_details = tech_details.replace(api_key, "[REDACTED]")
+                print(f"[Crop Doctor Error] Analysis failed: {tech_details}", flush=True)
+
+                # Show only a short friendly message in the selected language, never raw API text
                 err_msg = (
-                    f"معائنہ مکمل نہیں ہو سکا: {e}"
+                    "سروس اس وقت مصروف ہے۔ براہ کرم ایک منٹ بعد دوبارہ کوشش فرمائیں۔"
                     if is_urdu
-                    else f"Analysis could not be completed: {e}"
+                    else "The service is busy right now. Please try again in a minute."
                 )
                 st.error(err_msg)
 
