@@ -177,7 +177,13 @@ crop-doctor/
 ---
 
 ## ⚠️ Limitations & Responsible AI
-- **Guidance, Not Certified Diagnosis:** Crop Doctor is designed as an early decision-support aid. It does not replace laboratory tissue culturing, microscopic spore analysis, or official extension officer field visits.
+- **Guidance, Not Certified Diagnosis:**
+- Crop Doctor gives guidance only. It is not a confirmed diagnosis.
+- Results depend on photo quality, lighting and crop type, and may be wrong.
+- Tested only on a small set of our own photos; accuracy has not been validated.
+- It does not replace a local agriculture officer, especially for severe or fast-spreading problems.
+- Treatment suggestions are generic; always follow the product label and local advice.
+ Crop Doctor is designed as an early decision-support aid. It does not replace laboratory tissue culturing, microscopic spore analysis, or official extension officer field visits.
 - **No Accuracy Claims:** We do not claim arbitrary or unverified diagnostic statistics (e.g. "98% accurate"). Formal agronomic validation requires multi-season field trials across diverse agro-ecological zones. Our evaluation in `docs/DISCLOSURE.md` represents a qualitative manual check on our own sample images.
 - **Single-Leaf Foliar Scope:** Single-photo inspection cannot detect systemic root-knot nematodes, subterranean crown rot, vascular wilt, or complex multi-pathogen co-infections.
 - **Lighting & Photo Quality Sensitivity:** Severe shadows, intense glare, or low camera resolution degrade visual cues. To mitigate this, our "Ask, Don't Guess" rule actively refuses analysis on unclear images.
